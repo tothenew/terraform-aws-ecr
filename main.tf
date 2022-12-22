@@ -1,42 +1,21 @@
-locals {
-  lifecycle_policy = {
-    rules = [{
-      rulePriority = 10
-      description  = "keep last 20 images"
-      action = {
-        type = "expire"
-      }
-      selection = {
-        tagStatus   = "any"
-        countType   = "imageCountMoreThan"
-        countUnit   = "days"
-        countNumber = 30
-      }
-    },
-    {
-      rulePriority = 1
-      description  = "Expire untagged images older than 14 days"
-      action = {
-        type = "expire"
-      }
-      selection = {
-        tagStatus   = "untagged"
-        countType   = "sinceImagePushed"
-        countUnit   = "days"
-        countNumber = 1
-      }
-    }]
+resource "aws_ecr_repository" "ecr" {
+  for_each             = { for i, ecr in var.ecrName: ecr => i }
+  name                 = each.key
+  image_tag_mutability = var.image_tag_mutability
+
+  image_scanning_configuration {
+    scan_on_push = var.scan_on_push
+  }
+  encryption_configuration {
+    encryption_type = var.encryption_type
   }
 }
 
+resource "aws_ecr_lifecycle_policy" "auto-remove" {
+  for_each   = { for i, ecr in var.ecrName: ecr => i }
 
-######################## Module ######################
+  repository = aws_ecr_repository.ecr[each.key].id
+  policy     = jsonencode(var.lifecycle_policy)
 
-module "ecr" {
-    source               = "./modules/" 
-    image_tag_mutability = "MUTABLE"
-    encryption_type      = "AES256"
-    scan_on_push         = false
-    lifecycle_policy     = local.lifecycle_policy
-    ecrName              = ["test","test2"]
+  depends_on = [aws_ecr_repository.ecr]
 }
