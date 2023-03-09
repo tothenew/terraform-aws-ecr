@@ -1,5 +1,4 @@
 module "ecr" {
-    # source               = 
     source               = "../"
     image_tag_mutability = "MUTABLE"
     encryption_type      = "AES256"
