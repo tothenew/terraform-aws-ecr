@@ -6,7 +6,6 @@ variable "image_tag_mutability" {}
 
 variable "encryption_type" {}
 
-variable "lifecycle_policy" {}
 
 
 
