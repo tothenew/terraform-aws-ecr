@@ -1,0 +1,16 @@
+common:
+  vpn_cidr: "10.1.0.0/16"
+
+workspaces:
+  nonprod-us-east-1-default:
+    aws:
+      account_id: 123456789
+      region: us-east-1
+    account_name: nonprod
+    project_name: test
+    project_name_prefix: test
+    image_tag_mutability: "MUTABLE"
+    encryption_type: "AES256"
+    scan_on_push: false
+    ecrName: ["test", "test2"]
+
