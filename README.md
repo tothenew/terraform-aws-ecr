@@ -3,14 +3,33 @@
 [![Lint Status](https://github.com/tothenew/terraform-aws-template/workflows/Lint/badge.svg)](https://github.com/tothenew/terraform-aws-template/actions)
 [![LICENSE](https://img.shields.io/github/license/tothenew/terraform-aws-template)](https://github.com/tothenew/terraform-aws-template/blob/master/LICENSE)
 
-This is a template to use for baseline. The default actions will provide updates for section bitween Requirements and Outputs.
 
-The following content needed to be created and managed:
- - Introduction
-     - Explaination of module 
-     - Intended users
- - Resource created and managed by this module
- - Example Usages
+## Introduction
+
+This Terraform module provisions one or more AWS Elastic Container Registry (ECR) repositories with configurable settings such as image tag mutability, scan-on-push, encryption, and lifecycle policies.
+
+## Explanation of Module
+
+The module dynamically creates multiple ECR repositories using a list of repository names. Each repository can have scanning enabled on push, tag mutability set, encryption configured, and a lifecycle policy applied to manage image cleanup automatically.
+
+## Resources Created and Managed by This Module
+
+- `aws_ecr_repository`
+- `aws_ecr_lifecycle_policy`
+
+## Example Usage
+
+```hcl
+module "ecr" {
+  source               = "git::https://github.com/tothenew/terraform-aws-ecr.git"
+  image_tag_mutability = "MUTABLE"
+  encryption_type      = "AES256"
+  scan_on_push         = false
+  lifecycle_policy     = local.lifecycle_policy
+  ecrName              = ["test", "test2"]
+}
+
+```
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
